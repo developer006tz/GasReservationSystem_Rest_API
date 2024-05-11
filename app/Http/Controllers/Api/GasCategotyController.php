@@ -51,28 +51,33 @@ class GasCategotyController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(GasCategory $gasGategory)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(GasCategory $gasGategory)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, GasCategory $gasGategory)
+    public function update(Request $request,$categoryId)
     {
-        //
+        $request->validate([
+            'name'=>['required'],
+            'image'=>['nullable','file','mimes:jpg,png,webp,jpeg,svg']
+        ]);
+        try {
+            $category = GasCategory::find($categoryId);
+            $category->name = $request->name;
+            $category->save();
+            if($request->hasFile('image')){
+                $file=$request->file('image');
+                $file_name = upload_file($file);
+                $category->image=$file_name;
+                $category->save();
+                $category->refresh();
+            }
+            return $this->successResponse($category,Response::HTTP_CREATED);
+        }catch (\Throwable $th)
+        {
+            return $this->errorResponse($th->getMessage(),Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
     /**
