@@ -58,7 +58,7 @@ class AuthController extends Controller
             {
                 return $this->errorResponse('invalid email or password',Response::HTTP_UNAUTHORIZED);
             }
-            $user = User::whereEmail($request->email)->first();
+            $user = User::whereEmail(trim($request->email))->first();
             if($user->tokens()){
                 $user->tokens()->delete();
             }

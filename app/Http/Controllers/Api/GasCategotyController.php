@@ -17,7 +17,7 @@ class GasCategotyController extends Controller
     public function index()
     {
         try {
-            $categories=GasCategory::query()->get()->toQuery();
+            $categories=GasCategory::query()->get()->toArray();
             return $this->successResponse($categories,Response::HTTP_OK);
         }catch (\Throwable $th)
         {

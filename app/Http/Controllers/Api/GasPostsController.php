@@ -18,7 +18,7 @@ class GasPostsController extends Controller
     public function index()
     {
         try {
-            $gasPosts = Gas::all();
+            $gasPosts = Gas::query()->get();
             return $this->successResponse($gasPosts, Response::HTTP_OK);
         } catch (\Throwable $th) {
             return $this->errorResponse($th->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
