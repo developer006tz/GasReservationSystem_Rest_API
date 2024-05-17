@@ -5,24 +5,15 @@ namespace App\Traits;
 trait ApiResponces
 {
 
-    /**
-     * @param mixed $data
-     * @param int $status
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function successResponse($data, $status = 200, $message = null)
+
+    public function successResponse($data, $status = 200, $message = null): \Illuminate\Http\JsonResponse
     {
 
         return response()->json($data, $status);
     }
 
 
-    /**
-     * @param string $message
-     * @param int $status
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function errorResponse($message, $status,$data=null)
+    public function errorResponse($message, $status,$data=null): \Illuminate\Http\JsonResponse
     {
         return response()->json(['error' => $message, 'status' => $status,'data'=>$data ], $status);
     }
