@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
             'name'=>'Ludovick Konyo',
             'email'=>'developer.ludovic@gmail.com',
             'phone'=>'255746828843',
-            'user_ype'=>'supplier',
+            'user_type'=>'supplier',
             'password'=>Hash::make('admin123')
         ];
         User::query()->create($user);
