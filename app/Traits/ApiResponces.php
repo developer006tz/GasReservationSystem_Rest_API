@@ -12,11 +12,8 @@ trait ApiResponces
      */
     public function successResponse($data, $status = 200, $message = null)
     {
-        $response = ['data' => $data];
-        if ($message !== null) {
-            $response['message'] = $message;
-        }
-        return response()->json($response, $status);
+
+        return response()->json($data, $status);
     }
 
 
