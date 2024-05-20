@@ -77,7 +77,28 @@ class AuthController extends Controller
 
     public function getAuthUser()
     {
-
         return $this->successResponse(auth()->user(),Response::HTTP_OK);
+    }
+
+    public function logout(Request $request){
+       auth()->logout();
+    }
+
+    public function updateProfile(Request $request,$userId){
+        $validated = $request->validate([
+            'name' => ['required'],
+            'phone' => ['required', 'unique:users,phone'],
+            'password' => ['nullable'],
+            'email' => ['required', 'unique:users,email'],
+        ]);
+
+        $user = User::find($userId);
+        if(!empty($validated['password'])){
+            $validated['password'] = Hash::make($validated['password']);
+        }
+        $user->fill($validated);
+        $user->save();
+
+        return $this->successResponse($user,Response::HTTP_OK);
     }
 }

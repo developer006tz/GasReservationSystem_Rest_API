@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreGasPostRequest;
 use App\Models\Gas;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,39 +13,10 @@ class GasPostsController extends Controller
 {
     use ApiResponces;
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function addGasPost(StoreGasPostRequest $request)
     {
         try {
-            $gasPosts = Gas::query()->get();
-            return $this->successResponse($gasPosts, Response::HTTP_OK);
-        } catch (\Throwable $th) {
-            return $this->errorResponse($th->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'gas_category_id' => 'required',
-            'title' => 'required',
-            'image' => 'nullable|file|mimes:jpg,png,webp,jpeg,svg',
-            'location' => 'required',
-            'in_stock' => 'required',
-            'price' => 'required',
-            'supplier_id' => 'required',
-            'is_published' => 'required',
-            'latitude' => 'required',
-            'longitude' => 'required'
-        ]);
-
-        try {
-            $gasPost = Gas::create($request->only(['gas_category_id', 'title', 'location', 'in_stock', 'price', 'supplier_id', 'is_published', 'latitude', 'longitude']));
+            $gasPost = Gas::create($request->validated());
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
                 $file_name = upload_file($file);
@@ -58,10 +30,17 @@ class GasPostsController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($gasPostId)
+    public function getGasPosts()
+    {
+        try {
+            $gasPosts = Gas::get();
+            return $this->successResponse($gasPosts, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return $this->errorResponse($th->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public function getSingleGasPost($gasPostId)
     {
         try {
             $gasPost = Gas::findOrFail($gasPostId);
@@ -71,48 +50,34 @@ class GasPostsController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $gasPostId)
-    {
-        $request->validate([
-            'gas_category_id' => 'required',
-            'title' => 'required',
-            'image' => 'nullable|file|mimes:jpg,png,webp,jpeg,svg',
-            'location' => 'required',
-            'in_stock' => 'required',
-            'price' => 'required',
-            'supplier_id' => 'required',
-            'is_published' => 'required',
-            'latitude' => 'required',
-            'longitude' => 'required'
-        ]);
-
+    public function getSupplierGasPosts($supplierId){
         try {
-            $gasPost = Gas::findOrFail($gasPostId);
-            $gasPost->update($request->only(['gas_category_id', 'title', 'location', 'in_stock', 'price', 'supplier_id', 'is_published', 'latitude', 'longitude']));
-            if ($request->hasFile('image')) {
-                $file = $request->file('image');
-                $file_name = upload_file($file);
-                $gasPost->image = $file_name;
-                $gasPost->save();
-                $gasPost->refresh();
-            }
+            $gasPost = Gas::where('supplier_id', $supplierId)->get();
             return $this->successResponse($gasPost, Response::HTTP_OK);
         } catch (\Throwable $th) {
             return $this->errorResponse($th->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Gas $gas)
+    public function publishGasPost($GasPostId){
+        try {
+            $gasPost = Gas::findOrFail($GasPostId);
+            $gasPost->is_published = true;
+            $gasPost->save();
+            return $this->successResponse($gasPost, Response::HTTP_OK);
+        }
+        catch (\Throwable $th) {
+            return $this->errorResponse($th->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public function unPublishGasPost($GasPostId)
     {
         try {
-            $gas->delete();
-            return $this->successResponse(null, Response::HTTP_NO_CONTENT);
+            $gasPost = Gas::findOrFail($GasPostId);
+            $gasPost->is_published = false;
+            $gasPost->save();
+            return $this->successResponse($gasPost, Response::HTTP_OK);
         } catch (\Throwable $th) {
             return $this->errorResponse($th->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }

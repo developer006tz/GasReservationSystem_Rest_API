@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreGasCategotyRequest;
 use App\Models\GasCategory;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,13 +12,11 @@ use App\Traits\ApiResponces;
 class GasCategotyController extends Controller
 {
     use ApiResponces;
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+ 
+    public function getGasCategories()
     {
         try {
-            $categories=GasCategory::query()->get()->toArray();
+            $categories=GasCategory::all()->toArray();
             return $this->successResponse($categories,Response::HTTP_OK);
         }catch (\Throwable $th)
         {
@@ -25,18 +24,10 @@ class GasCategotyController extends Controller
         }
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function addGasCategory(StoreGasCategotyRequest $request)
     {
-        $request->validate([
-            'name'=>['required'],
-            'image'=>['nullable','file','mimes:jpg,png,webp,jpeg,svg']
-        ]);
         try {
-            $category = GasCategory::create($request->only(['name']));
+            $category = GasCategory::create($request->validated());
             if($request->hasFile('image')){
                 $file=$request->file('image');
                 $file_name = upload_file($file);
@@ -51,40 +42,13 @@ class GasCategotyController extends Controller
         }
     }
 
-
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request,$categoryId)
-    {
-        $request->validate([
-            'name'=>['required'],
-            'image'=>['nullable','file','mimes:jpg,png,webp,jpeg,svg']
-        ]);
+    public function getSingleGasCategory($categoryId){
         try {
-            $category = GasCategory::find($categoryId);
-            $category->name = $request->name;
-            $category->save();
-            if($request->hasFile('image')){
-                $file=$request->file('image');
-                $file_name = upload_file($file);
-                $category->image=$file_name;
-                $category->save();
-                $category->refresh();
-            }
-            return $this->successResponse($category,Response::HTTP_CREATED);
-        }catch (\Throwable $th)
-        {
-            return $this->errorResponse($th->getMessage(),Response::HTTP_UNPROCESSABLE_ENTITY);
+            $category = GasCategory::findOrFail($categoryId);
+            return $this->successResponse($category,Response::HTTP_OK);
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(GasCategory $gasGategory)
-    {
-        //
+        catch (\Throwable $th){
+            return $this->errorResponse($th->getMessage(),Response::HTTP_BAD_REQUEST);
+        }
     }
 }
