@@ -47,4 +47,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function SupplierOrders()
+    {
+        return $this->hasMany(Sales::class, 'supplier_id', 'id');
+    }
+
+    public function CustmerOrders()
+    {
+        return $this->hasMany(Sales::class, 'customer_id', 'id');
+    }
+
+
 }
