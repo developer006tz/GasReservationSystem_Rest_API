@@ -9,7 +9,7 @@ class GasCategory extends Model
 {
     use HasFactory;
 
-    protected $table = 'gas_category';
+    protected $table = 'gas_categories';
     protected $fillable = ['name','image'];
     protected $hidden = ['created_at','updated_at'];
 
