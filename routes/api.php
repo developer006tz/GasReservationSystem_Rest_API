@@ -13,6 +13,7 @@ Route::group(['prefix' => 'auth'], function ($auth) {
     $auth->get('user', [AuthController::class, 'getAuthUser']);
     $auth->post('update-profile', [AuthController::class,'updateProfile']);
     $auth->post('logout', [AuthController::class,'logout']);
+    $auth->get('all-user', [AuthController::class,'getAllUsers']);
 });
 
 
