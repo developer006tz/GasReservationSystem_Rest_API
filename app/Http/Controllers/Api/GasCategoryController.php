@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreGasCategotyRequest;
 use App\Models\GasCategory;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Traits\ApiResponces;
 
-class GasCategotyController extends Controller
+class GasCategoryController extends Controller
 {
     use ApiResponces;
  

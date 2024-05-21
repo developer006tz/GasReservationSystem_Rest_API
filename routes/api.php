@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\GasCategotyController;
+use App\Http\Controllers\Api\GasCategoryController;
 use App\Http\Controllers\Api\GasPostsController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Api\OrderController;
@@ -17,9 +17,9 @@ Route::group(['prefix' => 'auth'], function ($auth) {
 
 
 Route::group(['prefix' => 'gas-category', 'middleware' => 'auth:sanctum'], function ($gasGategory) {
-    $gasGategory->post('add', [GasCategotyController::class, 'addGasCategory']);
-    $gasGategory->get('get', [GasCategotyController::class, 'getGasCategories']);
-    $gasGategory->get('get/{category_id}', [GasCategotyController::class, 'getSingleGasCategory']);
+    $gasGategory->post('add', [GasCategoryController::class, 'addGasCategory']);
+    $gasGategory->get('get', [GasCategoryController::class, 'getGasCategories']);
+    $gasGategory->get('get/{category_id}', [GasCategoryController::class, 'getSingleGasCategory']);
 });
 
 
@@ -38,4 +38,6 @@ Route::group(['prefix' => 'order', 'middleware' => 'auth:sanctum'], function ($o
     $order->get('get-client-orders/{client_id}', [OrderController::class, 'getClientOrders']);
     $order->get('get-supplier-orders/{supplier_id}', [OrderController::class, 'getSupplierOrders']);
     $order->get('get/{order_id}', [OrderController::class, 'getSingleOrder']);
+    $order->patch('update/{order_id}', [OrderController::class, 'updateOrder']);
+    $order->delete('delete/{order_id}', [OrderController::class, 'deleteOrder']);
 });
