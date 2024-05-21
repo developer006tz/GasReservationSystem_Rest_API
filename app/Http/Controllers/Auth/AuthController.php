@@ -19,10 +19,10 @@ class AuthController extends Controller
 
     public function register(Request $request){
         $request->validate([
-            'name'=>['required'],
-            'phone'=>['required','unique:users,phone'],
-            'password'=>['required'],
-            'email'=>['required','unique:users,email'],
+            'name'=>['required','string','min:3'],
+            'phone'=>['required','unique:users,phone','min:9'],
+            'password'=>['required','min:4'],
+            'email'=>['required','email','unique:users,email'],
             'user_type'=>['required','in:supplier,client']
         ]);
         $password = Hash::make(trim($request->password));
