@@ -101,4 +101,8 @@ class AuthController extends Controller
 
         return $this->successResponse($user,Response::HTTP_OK);
     }
+
+    public function getAllUsers(){
+        return $this->successResponse(User::all()->toArray(),Response::HTTP_OK);
+    }
 }
