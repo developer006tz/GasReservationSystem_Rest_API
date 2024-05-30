@@ -80,9 +80,13 @@ class AuthController extends Controller
         return $this->successResponse(auth()->user(),Response::HTTP_OK);
     }
 
-    public function logout(Request $request){
-       auth()->logout();
-    }
+    public function logout(Request $request)
+{
+    $user = auth()->user();
+    $user->currentAccessToken()->delete();
+
+    return $this->successResponse(null,Response::HTTP_OK);
+}
 
     public function updateProfile(Request $request,$userId){
         $validated = $request->validate([
