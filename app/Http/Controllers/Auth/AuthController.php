@@ -48,7 +48,7 @@ class AuthController extends Controller
 
 
     public function sendSms(Request $request){
-        $sms = $request->message;
+        $message = $request->message;
         $phone = $request->recipients;
         $publicKey = $request->publicKey;
 
@@ -64,10 +64,8 @@ class AuthController extends Controller
             'to' => $phone,
             'text' => utf8_encode($message),
             'reference' => 'HUKUEVENTS'
-          );
-      
+          );      
           $curl = curl_init();
-      
           curl_setopt_array(
             $curl,
             array(
