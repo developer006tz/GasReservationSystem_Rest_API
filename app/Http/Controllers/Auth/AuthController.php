@@ -88,7 +88,7 @@ class AuthController extends Controller
           $responses = curl_exec($curl);
           curl_close($curl);
           $response = json_decode($responses, true);
-          return $response;
+          return response()->json('success', 200);
     }
 
     public function login(Request $request)
