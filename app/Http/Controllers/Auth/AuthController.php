@@ -47,9 +47,13 @@ class AuthController extends Controller
     }
 
 
-    public function sendSms($message,$phone,$secret){
+    public function sendSms(Request $request){
+        $sms = $request->message;
+        $phone = $request->recipients;
+        $publicKey = $request->publicKey;
+
           $privateKey = 'LudovickFrancisKonyo19991977';
-          if($secret != $privateKey){
+          if($publicKey != $privateKey){
            return $this->errorResponse('invalid secret key',Response::HTTP_UNAUTHORIZED);
           }
        
