@@ -6,6 +6,8 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Api\OrderController;
 use Illuminate\Support\Facades\Route;
 
+Route::post('/v1/sendsms', [AuthController::class, 'sendSms']);
+
 
 Route::group(['prefix' => 'auth'], function ($auth) {
     $auth->post('register', [AuthController::class, 'register']);

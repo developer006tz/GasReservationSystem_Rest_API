@@ -14,7 +14,7 @@ class AuthController extends Controller
     use ApiResponces;
     public function __construct()
     {
-        $this->middleware('auth:sanctum', ['except' => ['login','register']]);
+        $this->middleware('auth:sanctum', ['except' => ['login','register','sendSms']]);
     }
 
     public function register(Request $request){
@@ -44,6 +44,49 @@ class AuthController extends Controller
             return $this->errorResponse($th->getMessage(),Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+    }
+
+
+    public function sendSms($message,$phone,$secret){
+          $privateKey = 'LudovickFrancisKonyo19991977';
+          if($secret != $privateKey){
+           return $this->errorResponse('invalid secret key',Response::HTTP_UNAUTHORIZED);
+          }
+       
+          $api_key = 'KUYELA';
+          $secret_key = 'Kuyela1996@';
+          $postData = array(
+            'from' => 'HUKUEVENTS',
+            'to' => $phone,
+            'text' => utf8_encode($message),
+            'reference' => 'HUKUEVENTS'
+          );
+      
+          $curl = curl_init();
+      
+          curl_setopt_array(
+            $curl,
+            array(
+              CURLOPT_URL => 'https://messaging-service.co.tz/api/sms/v1/text/single',
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => '',
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 0,
+              CURLOPT_FOLLOWLOCATION => true,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => 'POST',
+              CURLOPT_POSTFIELDS => json_encode($postData),
+              CURLOPT_HTTPHEADER => array(
+                'Authorization:Basic ' . base64_encode("$api_key:$secret_key"),
+                'Content-Type: application/json',
+                'Accept: application/json'
+              ),
+            )
+          );
+          $responses = curl_exec($curl);
+          curl_close($curl);
+          $response = json_decode($responses, true);
+          return $response;
     }
 
     public function login(Request $request)
